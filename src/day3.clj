@@ -7,27 +7,14 @@
 
 (def pat #"mul\((\d{1,3}),(\d{1,3})\)")
 
-(defn find-matches
-  ([sample]
-   (find-matches sample pat))
-  ([sample pat]
-   (let [m (re-matcher pat sample)]
-     (loop [v []]
-       (if (.find m)
-         (recur (conj v (.group m)))
-         v)))))
-
-(def matches
-  (find-matches sample))
-
 (defn calculate1
   [matches]
   (reduce +
-          (map (fn [s]
-                 (let [[_ n m] (re-find pat s)]
-                   (* (parse-long n) (parse-long m))))
+          (map (fn [[_ n m]]
+                 (* (parse-long n) (parse-long m)))
                matches)))
-(calculate1 (find-matches sample))
+
+(calculate1 (re-seq pat sample))
 ;; => 161
 
 (def input
@@ -35,28 +22,25 @@
        io/resource
        slurp))
 
-(calculate1 (find-matches input))
+(calculate1 (re-seq pat input))
 ;; => 157621318
 
 (def sample2 "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))")
 (def pat2 #"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)")
-(find-matches sample2 pat2)
-(def tokens (find-matches input pat2))
 
-(defn find-active-tokens
+(defn sum-active
   [tokens]
-  (loop [[head & tokens] tokens
+  (loop [[[head n m] & tokens] tokens
          active true
-         acc []]
+         acc 0]
     (if head
       (condp = head
         "don't()" (recur tokens false acc)
         "do()" (recur tokens true acc)
-        (recur tokens active (if active (conj acc head) acc)))
+        (recur tokens active (if active (+ acc (* (parse-long n) (parse-long m))) acc)))
       acc)))
 
-(calculate1 (find-active-tokens (find-matches sample2 pat2)))
-;; => 48
+(sum-active (re-seq pat2 sample2))
 
-(calculate1 (find-active-tokens (find-matches input pat2)))
+(sum-active (re-seq pat2 input))
 ;; => 79845780
