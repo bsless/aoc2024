@@ -196,7 +196,7 @@ S..X")
            :when (= c \A)
            :let [paths (make-paths2 x y)
                  views (for [path paths
-                             :let [view (transduce (map (fn [[x y]] (-> lines (get x) (String/.charAt (int y))))) sbrf path)]
+                             :let [view (transduce (map (fn [[x y]] (-> lines (nth x) (String/.charAt (int y))))) sbrf path)]
                              :when (or (= view "MAS") (= view "SAM"))]
                          view)]
            :when (= 2 (count views))]
