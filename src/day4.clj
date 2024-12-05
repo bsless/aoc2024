@@ -193,7 +193,7 @@ S..X")
                              :let [view
                                    (apply str
                                           (for [[x y] path]
-                                            (get-in lines [x y])))]
+                                            (-> lines (get x) (get y))))]
                              :when (or (= view "MAS") (= view "SAM"))]
                          view)]
            :when (= 2 (count views))]
