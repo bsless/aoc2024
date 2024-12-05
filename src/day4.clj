@@ -3,6 +3,8 @@
    [clojure.java.io :as io]
    [clojure.string :as str]))
 
+(set! *warn-on-reflection* true)
+
 (def small-sample
   "..X...
 .SAMX.
@@ -170,7 +172,7 @@ S..X")
 ;; => 2370
 
 (defn make-paths2
-  [x y]
+  [^long x ^long y]
   [[[(dec x) (dec y)]
     [x y]
     [(inc x) (inc y)]]
@@ -178,6 +180,10 @@ S..X")
     [x y]
     [(inc x) (dec y)]]])
 
+(defn sbrf
+  ([] (StringBuilder.))
+  ([^StringBuilder sb] (.toString sb))
+  ([^StringBuilder sb ^Character x] (.append sb x)))
 
 (defn solve2
   [sample]
@@ -190,10 +196,7 @@ S..X")
            :when (= c \A)
            :let [paths (make-paths2 x y)
                  views (for [path paths
-                             :let [view
-                                   (apply str
-                                          (for [[x y] path]
-                                            (-> lines (get x) (get y))))]
+                             :let [view (transduce (map (fn [[x y]] (-> lines (get x) (get y)))) sbrf path)]
                              :when (or (= view "MAS") (= view "SAM"))]
                          view)]
            :when (= 2 (count views))]
@@ -214,5 +217,7 @@ S.S.S.S.S.
 M.M.M.M.M.
 ..........")
 
-(solve2 input)
+(time
+ (dotimes [_ 1e3]
+   (solve2 input)))
 ;; => 1908
