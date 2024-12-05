@@ -192,11 +192,11 @@ S..X")
      (for [x (range 1 (dec (count lines)))
            :let [line (get lines x)]
            y (range 1 (dec (count line)))
-           :let [c (get line y)]
+           :let [c (String/.charAt line (int y))]
            :when (= c \A)
            :let [paths (make-paths2 x y)
                  views (for [path paths
-                             :let [view (transduce (map (fn [[x y]] (-> lines (get x) (get y)))) sbrf path)]
+                             :let [view (transduce (map (fn [[x y]] (-> lines (get x) (String/.charAt (int y))))) sbrf path)]
                              :when (or (= view "MAS") (= view "SAM"))]
                          view)]
            :when (= 2 (count views))]
