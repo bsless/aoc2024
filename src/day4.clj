@@ -190,7 +190,7 @@ S..X")
   (let [lines (str/split-lines sample)]
     (count
      (for [x (range 1 (dec (count lines)))
-           :let [line (get lines x)]
+           :let [line (nth lines x)]
            y (range 1 (dec (count line)))
            :let [c (String/.charAt line (int y))]
            :when (= c \A)
