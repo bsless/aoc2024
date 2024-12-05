@@ -112,11 +112,11 @@ S..X")
       (take-nth width (drop i s)))))
 
 (reduce + (map count (keep #(re-seq #"XMAS|SAMX" %)
-                  (map (partial apply str)
-                       (concat (str/split-lines sample')
-                               (all-verticals sample')
-                               (all-left-diagonals sample')
-                               (all-right-diagonals sample'))))))
+                           (map (partial apply str)
+                                (concat (str/split-lines sample')
+                                        (all-verticals sample')
+                                        (all-left-diagonals sample')
+                                        (all-right-diagonals sample'))))))
 
 (map (partial apply str )(all-left-diagonals sample'))
 
